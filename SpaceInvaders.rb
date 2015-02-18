@@ -11,7 +11,7 @@ class GameWindow < Gosu::Window
 	end
 
 	def draw
-		@ship:structure:draw(*ship:location)
+		@ship.structure:draw(*ship.location)
 	end
 end
 
