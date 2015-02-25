@@ -31,8 +31,31 @@ class Game
 end #Game
 
 class SpaceObject
-	def initialize
+	def initialize(location, structure)
+		@location = location
+		@structure = structure
+		@velocity = 0
 	end
 	def draw
 	end
 end #SpaceObject
+
+class PlayerShip < SpaceObject
+	def fire()
+	end
+end #PlayerShip
+
+class SpaceInvader < SpaceObject
+	def initialize(location, structure, index)
+		@index = index
+		super.initialize(location, structure)
+	end
+	def turnAround()
+	end
+end #SpaceInvader
+
+module BoundingBox
+	attr_reader :x :y :width :height
+	def inside?(point)
+		
+		
