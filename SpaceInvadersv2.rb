@@ -1,61 +1,115 @@
-/
-Space Invaders take two
-/
+#! usr/bin/env/ruby
+
+require 'gosu'
+require 'test/unit'
 
 class GameWindow < Gosu::Window
+
 	def initialize
 	end
+	
 	def update
 	end
+	
 	def draw
 	end
-	def checkCollisions
-	end
+
 end #GameWindow
 
 class Game
-	attr_accessor :score
+
 	attr_accessor :invaders
 	attr_accessor :playerShip
-	attr:accessor :lasers
-	def initialize
+	attr_accessor :lasers
+	
+	def initialize()
+		@invaders = Array.new
+		@playerShip = PlayerShip.new
+		@lasers = Array.new
+		
+		spawnInvaders
 	end
-	def victory
+	
+	def spawnInvaders
+		for i in 1..4
+			@invaders << SpaceInvader.new()
+		end
 	end
-	def defeat
+	
+	def victory?
+		if @invaders.count == 0
+			return true
+		end
+		return false
 	end
+	
+	def defeat?
+		if @invaders[0].location == "bottom"
+			return true
+		end
+		return false
+	end
+	
+	def checkCollisions
+	end
+	
 	def moveObjects
 	end
+	
 	def turnInvaders
+		@invaders.each do |i|
+			@invaders[i].turnAround()
+		end
 	end
+
 end #Game
 
 class SpaceObject
-	def initialize(location, structure)
-		@location = location
-		@structure = structure
-		@velocity = 0
+	
+	attr_accessor :location
+	attr_accessor :structure
+	attr_accessor :velocity
+	
+	def draw()
 	end
-	def draw
-	end
-end #SpaceObject
+	
+end
 
 class PlayerShip < SpaceObject
+	
 	def fire()
 	end
-end #PlayerShip
+	
+end
 
 class SpaceInvader < SpaceObject
-	def initialize(location, structure, index)
-		@index = index
-		super.initialize(location, structure)
-	end
+	
 	def turnAround()
 	end
-end #SpaceInvader
+	
+end
 
-module BoundingBox
-	attr_reader :x :y :width :height
-	def inside?(point)
-		
-		
+class Laser < SpaceObject
+end
+
+######################################################################################
+
+class Testing < Test::Unit::TestCase
+
+
+	def setup
+		@game = Game.new
+	end
+	def test_game
+		assert_equal(4, @game.invaders.count , "Error: spawnInvaders.")
+		assert_equal(false, @game.victory?, "Error: victory? false")
+		assert_equal(false, @game.defeat?, "Error: defeat? false")
+		@game.invaders[0].location = "bottom"
+		assert_equal(true, @game.defeat?, "Error: defeat? true")
+		for i in 0..3
+			@game.invaders.delete_at(0)
+		end
+		assert_equal(true, @game.victory?, "Error : victory? true")
+	end
+	
+end
