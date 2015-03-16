@@ -43,7 +43,7 @@ class Invader
 	attr_accessor :location
 	attr_accessor :structure
 	def initialize
-		@location = [
+		@location = []
 	end
 end #Invader
 
