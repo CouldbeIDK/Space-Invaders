@@ -31,7 +31,9 @@ class GameWindow < Gosu::Window
 		end
 		
 		if button_down? Gosu::KbSpace
-			@game.playerShip.fire
+			if @game.laser == nil
+				@game.playerShip.fire
+			end
 		end
 		
 		@game.turnInvaders
@@ -44,7 +46,9 @@ class GameWindow < Gosu::Window
 	def draw
 		@game.invaders.each { |invader| invader.draw() }
 		@game.playerShip.draw()
-		@game.lasers.each { |laser| laser.draw() }
+		if @game.laser != nil
+			@game.laser.draw()
+		end
 	end
 
 end #GameWindow
@@ -53,15 +57,14 @@ class Game
 
 	attr_accessor :invaders
 	attr_accessor :playerShip
-	attr_accessor :lasers
+	attr_accessor :laser
 	
 	def initialize(window)
 		@window = window
 	
 		@invaders = Array.new
 		@playerShip = PlayerShip.new( 218 , 600 , @window )
-		@lasers = Array.new
-		
+		@laser = nil
 		
 		spawnInvaders
 	end
@@ -87,12 +90,25 @@ class Game
 	end
 	
 	def checkCollisions
+		if laser != nil
+			i = 0
+			for invader in @invaders
+					if ( (@laser.x - invader.x)**2 + (@laser.y - invader.y)**2)**0.5 <= 50
+						@invaders[i] = nil
+						@laser = nil
+					end
+				i = i + 1
+				@invaders.compact!
+			end
+		end
 	end
 	
 	def moveObjects
 		@invaders.each { |invader| invader.x += invader.velocity * $invaderSpeed }
 		@playerShip.x += playerShip.velocity * $playerSpeed
-		@lasers.each { |laser| laser.y -= laser.velocity * $laserSpeed}
+		if @laser != nil
+			@laser.y -= @laser.velocity * $laserSpeed
+		end
 	end
 	
 	def turnInvaders
@@ -114,16 +130,11 @@ class Game
 	end
 	
 	def cleanUp
-		x = 0
-		for laser in @lasers
-			if laser.y <= 100
-				@lasers[x] = nil
+		if @laser != nil
+			if @laser.y <= 0
+				@laser = nil
 			end
-			x = x + 1
 		end
-		
-		@lasers.compact!
-				
 	end
 
 end #Game
@@ -164,7 +175,7 @@ class PlayerShip < SpaceObject
 	end
 	
 	def fire()
-		@window.game.lasers.push(Laser.new( @x + 18 , @y , @window ))
+		@window.game.laser = (Laser.new( @x + 18 , @y , @window ))
 	end
 	
 end #PlayerShip
@@ -199,6 +210,9 @@ class SpaceInvader < SpaceObject
 end #SpaceInvader
 
 class Laser < SpaceObject
+	
+	attr_accessor :x
+	attr_accessor :y
 
 	def initialize( x , y , window )
 		super
