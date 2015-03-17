@@ -12,12 +12,11 @@ class GameWindow < Gosu::Window
 	
 	def initialize
 		super(480, 640, false)
-		self.caption = "Space Invaders"
+		self.caption = "Bunny Invaders"
 		@game = Game.new(self)
 	end
 	
 	def update
-		
 		if @game.checkForEnd
 			self.close
 		end
@@ -77,6 +76,7 @@ class Game
 	
 	def victory?
 		if @invaders.count == 0
+			puts("You Win!")
 			return true
 		end
 		return false
@@ -84,6 +84,7 @@ class Game
 	
 	def defeat?
 		if @invaders.last.y >= 600
+			puts("GAME OVER")
 			return true
 		end
 		return false
@@ -91,16 +92,19 @@ class Game
 	
 	def checkCollisions
 		if laser != nil
-			i = 0
 			for invader in @invaders
-					if ( (@laser.x - invader.x)**2 + (@laser.y - invader.y)**2)**0.5 <= 50
-						@invaders[i] = nil
+					if distanceBetween?(laser.x , laser.y , invader.x , invader.y) <= 50
+						@invaders.delete(invader)
 						@laser = nil
+						$invaderSpeed = $invaderSpeed + 2 #to simulate the original game's "speeding up" after killing each invader
+						break
 					end
-				i = i + 1
-				@invaders.compact!
 			end
 		end
+	end
+	
+	def distanceBetween?( x1 , y1 , x2 , y2 )
+		return ((x1 - x2)**2 + (y1 - y2)**2)**0.5 #simple distance formula
 	end
 	
 	def moveObjects
@@ -166,8 +170,8 @@ class PlayerShip < SpaceObject
 		super	
 		@window = window
 		@structure = Gosu::Image.new(@window, "Space_Invaders_Ship.png", false)
-		@xf = 0.5
-		@yf = 0.5
+		@xf = 0.22
+		@yf = 0.22
 	end
 	
 	def draw()
@@ -187,8 +191,8 @@ class SpaceInvader < SpaceObject
 		@z = 3
 		@structure = Gosu::Image.new( window , "Space_Invader.png" , false )
 		@velocity = 1
-		@xf = 0.5
-		@yf = 0.5
+		@xf = 0.225
+		@yf = 0.225
 	end
 	
 	def draw()
