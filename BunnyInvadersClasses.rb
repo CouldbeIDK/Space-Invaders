@@ -145,7 +145,7 @@ class SpaceInvader < SpaceObject
 	def initialize ( x , y , window )
 		super
 		@z = 3
-		@structure = Gosu::Image.new( window , "Space_Invader.png" , false )
+		@structure = Gosu::Image.new( window , "space_invader.png" , false )
 		@velocity = 1
 		@xf = 0.225
 		@yf = 0.225
@@ -177,7 +177,7 @@ class Laser < SpaceObject
 	def initialize( x , y , window )
 		super
 		@z = 2
-		@structure = Gosu::Image.new( window , "Circle.png" , false )
+		@structure = Gosu::Image.new( window , "circle.png" , false )
 		@xf = 0.1
 		@yf = 0.1
 		@velocity = 1
