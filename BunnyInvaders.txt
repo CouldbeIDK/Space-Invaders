@@ -1,5 +1,3 @@
-require_relative "BunnyInvadersClasses"
-
 class GameWindow < Gosu::Window
 	
 	attr_accessor :game
@@ -45,6 +43,3 @@ class GameWindow < Gosu::Window
 	end
 
 end #GameWindow
-
-$The_Game = GameWindow.new()
-$The_Game.show()
